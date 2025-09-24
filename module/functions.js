@@ -15,105 +15,80 @@ const MESSAGE_ERROR = {
     "developer": "Leonardo Scotti Tobias"
 }
 
+const HEADER = {
+    "status": true,
+    "statuscode": 200,
+    "developer": "Leonardo Scotti Tobias"
+}
+
 const getAllDataUsers = () => {
     let message = {
-        "status": true,
-        "statuscode": 200,
-        "developer": "Leonardo Scotti Tobias"
-    }
+        "header": HEADER,
+        "main": {}
+    };
 
-    message.users = users;
+    let main = message.main;
 
-    if (message.users.length > 0) {
+    main.users = users;
+
+    if (main.users.length > 0) {
         return message;
     } else {
         return MESSAGE_ERROR;
-    }
+    };
 };
 
 const getPersonalDataUser = (numberUser) => {
     userNumber = numberUser;
 
     let message = {
-        "status": true,
-        "statuscode": 200,
-        "developer": "Leonardo Scotti Tobias",
-        "user": []
+        "header": HEADER,
+        "main": {
+            "user": []
+        }
     };
 
-    messageUser = message.user;
+    let main = message.main;
+
+    let messageUser = main.user;
 
     let userData = users.find(user => user.number === userNumber);
     if (userData) {
-        delete userData.contacts
+        delete userData.contacts;
 
-        messageUser.push(userData)
+        messageUser.push(userData);
 
-        return message
+        return message;
     } else {
         return MESSAGE_ERROR;
-    }
+    };
 };
 
 const getPersonalDataOfAllUserContacts = (numberUser) => {
     let userNumber = numberUser;
 
     let message = {
-        "status": true,
-        "statuscode": 200,
-        "developer": "Leonardo Scotti Tobias",
-        "user": []
-    }
+        "header": HEADER,
+        "main": {
+            "user": []
+        }
+    };
+    let main = message.main;
 
-    let messageUser = message.user;
+    let messageUser = main.user;
 
     let userData = users.find(user => user.number === userNumber);
     if (userData) {
-        let id = userData.id;
-        let account = userData.account;
-        let nickname = userData.nickname;
-        let profile_image = userData['profile-image'];
-        let start = userData['created-since'].start;
-        let end = userData['created-since'].end;
-        let number = userData.number;
-        let background = userData.background;
-
-        let user = {
-            "id": id,
-            "account": account,
-            "nickname": nickname,
-            "created-since": {
-                "start": start,
-                "end": end
-            },
-            "profile-image": profile_image,
-            "number": number,
-            "background": background,
-            "contacts": []
-        }
-
-        messageUser.push(user)
+        messageUser.push(userData);
 
         userData.contacts.forEach(contact => {
-            let name = contact.name;
-            let number = contact.number;
-            let description = contact.description;
-            let image = contact.image;
-
-            let contactData = {
-                "name": name,
-                "number": number,
-                "description": description,
-                "image": image
-            }
-
-            messageUser[0].contacts.push(contactData);
-        })
+            delete contact.messages
+        });
 
         return message;
     } else {
         return MESSAGE_ERROR;
-    }
+    };
 
 };
 
@@ -121,44 +96,19 @@ const getAllMessagesFromAllUserContacts = (numberUser) => {
     let userNumber = numberUser;
 
     let message = {
-        "status": true,
-        "statuscode": 200,
-        "developer": "Leonardo Scotti Tobias",
-        "user": []
-    }
+        "header": HEADER,
+        "main": {
+            "user": []
+        }
+    };
 
-    let messageUser = message.user;
+    let main = message.main;
+
+    let messageUser = main.user;
 
     let userData = users.find(user => user.number === userNumber);
     if (userData) {
-        let id = userData.id;
-        let account = userData.account;
-        let nickname = userData.nickname;
-        let profile_image = userData['profile-image'];
-        let start = userData['created-since'].start;
-        let end = userData['created-since'].end;
-        let number = userData.number;
-        let background = userData.background;
-
-        let user = {
-            "id": id,
-            "account": account,
-            "nickname": nickname,
-            "created-since": {
-                "start": start,
-                "end": end
-            },
-            "profile-image": profile_image,
-            "number": number,
-            "background": background,
-            "messages": []
-        }
-
-        messageUser.push(user)
-
-        userData.contacts.forEach(contact => {
-            messageUser[0].messages.push(contact['messages']);
-        })
+        messageUser.push(userData);
 
         return message;
     } else {
@@ -170,12 +120,32 @@ const getAllMessagesFromUserContact = (numberUser, numberContact) => {
     let userNumber = numberUser;
     let contactNumber = numberContact;
 
-    let message
+    let message = {
+        "header": HEADER,
+        "main": {
+            "user": []
+        }
+    };
+
+    let messageUser = message.main.user;
+
+    let userData = users.find(user => user.number === userNumber);
+    if (userData) {
+        let contactData = userData.contacts.find(contact => contact.number === contactNumber);
+        userData.contacts = [];
+        userData.contacts.push(contactData);
+
+        messageUser.push(userData);
+
+        return message;
+    } else {
+        return MESSAGE_ERROR;
+    }
 };
 
 const getSearchKeywordUserContactConversation = (numberUser, numberContact, keyword) => {};
 
-console.log(getAllMessagesFromAllUserContacts("1194457796"));
+console.log(JSON.stringify(getAllMessagesFromUserContact("11955577796", "26999999920"), null, 2));
 
 module.exports = {
     getAllDataUsers,
