@@ -150,14 +150,14 @@ const getAllMessagesFromAllUserContacts = (numberUser) => {
             },
             "profile-image": profile_image,
             "number": number,
-            "background": background
+            "background": background,
+            "messages": []
         }
 
         messageUser.push(user)
 
-        messageUser.messages = [];
         userData.contacts.forEach(contact => {
-            messageUser.messages.push(contact['messages']);
+            messageUser[0].messages.push(contact['messages']);
         })
 
         return message;
@@ -175,7 +175,7 @@ const getAllMessagesFromUserContact = (numberUser, numberContact) => {
 
 const getSearchKeywordUserContactConversation = (numberUser, numberContact, keyword) => {};
 
-console.log(getPersonalDataOfAllUserContacts("1194457796"));
+console.log(getAllMessagesFromAllUserContacts("1194457796"));
 
 module.exports = {
     getAllDataUsers,
