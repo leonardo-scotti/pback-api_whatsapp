@@ -143,9 +143,25 @@ const getAllMessagesFromUserContact = (numberUser, numberContact) => {
     }
 };
 
-const getSearchKeywordUserContactConversation = (numberUser, numberContact, keyword) => {};
+const getSearchKeywordUserContactConversation = (numberUser, numberContact, keyword) => {
+    let userNumber = numberUser;
+    let contactNumber = numberContact;
+    let keySerached = keyword;
 
-console.log(JSON.stringify(getAllMessagesFromUserContact("11955577796", "26999999920"), null, 2));
+    let userData = getAllMessagesFromUserContact(userNumber, contactNumber)
+
+    let messages = userData.main.user[0].contacts[0].messages;
+
+    let messageSearched = messages.filter(messageWanted => messageWanted.content.includes(keySerached))
+
+    messages = messageSearched
+
+    userData.main.user[0].contacts[0].messages = messageSearched;
+
+    console.log(JSON.stringify(userData, null, 2));
+};
+
+console.log(JSON.stringify(getSearchKeywordUserContactConversation("11987876567", "26999999963", "a"), null, 2));
 
 module.exports = {
     getAllDataUsers,
