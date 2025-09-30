@@ -10,16 +10,18 @@ const listOfUsers = require('./contatos.js');
 const users = listOfUsers.contatos['whats-users'];
 
 const MESSAGE_ERROR = {
-    "status": false,
-    "statuscode": 500,
-    "developer": "Leonardo Scotti Tobias"
-}
+    "header": {
+        "status": false,
+        "statuscode": 500,
+        "developer": "Leonardo Scotti Tobias"
+    }
+};
 
 const HEADER = {
     "status": true,
     "statuscode": 200,
     "developer": "Leonardo Scotti Tobias"
-}
+};
 
 const getAllDataUsers = () => {
     let message = {
@@ -39,7 +41,10 @@ const getAllDataUsers = () => {
 };
 
 const getPersonalDataUser = (numberUser) => {
-    userNumber = numberUser;
+    userNumber = String(numberUser);
+    if (!userNumber) {
+        return MESSAGE_ERROR;
+    }
 
     let message = {
         "header": HEADER,
@@ -52,7 +57,8 @@ const getPersonalDataUser = (numberUser) => {
 
     let messageUser = main.user;
 
-    let userData = users.find(user => user.number === userNumber);
+    let contatos = JSON.parse(JSON.stringify(users))
+    let userData = contatos.find(user => user.number === userNumber);
     if (userData) {
         delete userData.contacts;
 
@@ -65,7 +71,10 @@ const getPersonalDataUser = (numberUser) => {
 };
 
 const getPersonalDataOfAllUserContacts = (numberUser) => {
-    let userNumber = numberUser;
+    let userNumber = String(numberUser);
+    if (!userNumber) {
+        return MESSAGE_ERROR;
+    }
 
     let message = {
         "header": HEADER,
@@ -77,7 +86,8 @@ const getPersonalDataOfAllUserContacts = (numberUser) => {
 
     let messageUser = main.user;
 
-    let userData = users.find(user => user.number === userNumber);
+    let contatos = JSON.parse(JSON.stringify(users))
+    let userData = contatos.find(user => user.number === userNumber);
     if (userData) {
         messageUser.push(userData);
 
@@ -93,7 +103,10 @@ const getPersonalDataOfAllUserContacts = (numberUser) => {
 };
 
 const getAllMessagesFromAllUserContacts = (numberUser) => {
-    let userNumber = numberUser;
+    let userNumber = String(numberUser);
+    if (!userNumber) {
+        return MESSAGE_ERROR;
+    }
 
     let message = {
         "header": HEADER,
@@ -106,7 +119,9 @@ const getAllMessagesFromAllUserContacts = (numberUser) => {
 
     let messageUser = main.user;
 
-    let userData = users.find(user => user.number === userNumber);
+    let contatos = JSON.parse(JSON.stringify(users))
+
+    let userData = contatos.find(user => user.number === userNumber);
     if (userData) {
         messageUser.push(userData);
 
@@ -117,8 +132,11 @@ const getAllMessagesFromAllUserContacts = (numberUser) => {
 };
 
 const getAllMessagesFromUserContact = (numberUser, numberContact) => {
-    let userNumber = numberUser;
-    let contactNumber = numberContact;
+    let userNumber = String(numberUser);
+    let contactNumber = String(numberContact);
+    if (!userNumber || !contactNumber) {
+        return MESSAGE_ERROR;
+    }
 
     let message = {
         "header": HEADER,
@@ -129,9 +147,13 @@ const getAllMessagesFromUserContact = (numberUser, numberContact) => {
 
     let messageUser = message.main.user;
 
-    let userData = users.find(user => user.number === userNumber);
+    let contatos = JSON.parse(JSON.stringify(users))
+    let userData = contatos.find(user => user.number === userNumber);
     if (userData) {
         let contactData = userData.contacts.find(contact => contact.number === contactNumber);
+        if(!contactData) {
+            return MESSAGE_ERROR;
+        }
         userData.contacts = [];
         userData.contacts.push(contactData);
 
@@ -143,25 +165,35 @@ const getAllMessagesFromUserContact = (numberUser, numberContact) => {
     }
 };
 
-const getSearchKeywordUserContactConversation = (numberUser, numberContact, keyword) => {
+const getAllMessagesByKeyword = (numberUser, numberContact, keyword) => {
     let userNumber = numberUser;
     let contactNumber = numberContact;
     let keySerached = keyword;
+    if (!userNumber || !contactNumber || !keySerached) {
+        return MESSAGE_ERROR
+    }
 
-    let userData = getAllMessagesFromUserContact(userNumber, contactNumber)
+    let userData = getAllMessagesFromUserContact(userNumber, contactNumber);
+    if (!userData) {
+        return MESSAGE_ERROR;
+    }
 
     let messages = userData.main.user[0].contacts[0].messages;
 
-    let messageSearched = messages.filter(messageWanted => messageWanted.content.includes(keySerached))
+    let messageSearched = messages.filter(messageWanted => messageWanted.content.toLowerCase().includes(keySerached.toLowerCase()));
 
-    messages = messageSearched
+    messages = messageSearched;
 
     userData.main.user[0].contacts[0].messages = messageSearched;
 
-    console.log(JSON.stringify(userData, null, 2));
+    if (userData.main.user[0].contacts[0].messages.length <= 0) {
+        return MESSAGE_ERROR;
+    } else {
+        return userData;
+    }
 };
 
-console.log(JSON.stringify(getSearchKeywordUserContactConversation("11987876567", "26999999963", "a"), null, 2));
+//console.log(JSON.stringify(getAllMessagesByKeyword("11987876567", "26999999963", "leonid"), null, 2));
 
 module.exports = {
     getAllDataUsers,
@@ -169,5 +201,5 @@ module.exports = {
     getPersonalDataOfAllUserContacts,
     getAllMessagesFromAllUserContacts,
     getAllMessagesFromUserContact,
-    getSearchKeywordUserContactConversation
+    getAllMessagesByKeyword
 }

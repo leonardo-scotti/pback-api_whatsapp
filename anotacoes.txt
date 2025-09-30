@@ -2,6 +2,6 @@ EndPoints
     1 - Retornar todos os usuários e seus respectivos dados;          PRONTO
     2 - Listar os dados pessoais do profile de um usuário;            PRONTO
     3 - Listar os dados pessoais dos contatos de um usuário;          PRONTO
-    4 - Listar todas as mensagens de todos os contatos de um usuário; 
-    5 - Listar todas as mensagens de um contato de um usuário (USAR OBRIGATORIAMENTE O 'QUERY');
-    6 - Nas conversas, pesquisar uma palavra-chave e retornar as mensagens que contenham-a.
+    4 - Listar todas as mensagens de todos os contatos de um usuário; PRONTO
+    5 - Listar todas as mensagens de um contato de um usuário (USAR OBRIGATORIAMENTE O 'QUERY'); PRONTO
+    6 - Nas conversas, pesquisar uma palavra-chave e retornar as mensagens que contenham-a. PRONTO
